@@ -180,7 +180,7 @@ const addProperty = function (property) {
     property.description,
     property.thumbnail_photo_url,
     property.cover_photo_url,
-    Number(property.cost_per_night), // convert to integer (cents)
+    property.cost_per_night,
     property.street,
     property.city,
     property.province,
@@ -210,7 +210,6 @@ const addProperty = function (property) {
 };
 
 pool.query(`SELECT title FROM properties LIMIT 10;`).then(response => {console.log(response)})
-
 
 module.exports = {
   getUserWithEmail,
