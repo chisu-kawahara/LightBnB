@@ -106,10 +106,9 @@ const getAllProperties = (options, limit = 10) => {
   let queryString = `
     SELECT properties.*, AVG(property_reviews.rating) as average_rating
     FROM properties
-    JOIN property_reviews ON properties.id = property_reviews.property_id
+    LEFT JOIN property_reviews ON properties.id = property_reviews.property_id
   `;
 
-  // Filters
   let whereAdded = false;
 
   if (options.city) {
@@ -124,17 +123,26 @@ const getAllProperties = (options, limit = 10) => {
     whereAdded = true;
   }
 
-  if (options.minimum_price_per_night) {
-    // convert dollars to cents
+  // if both min and max are present
+  if (options.minimum_price_per_night && options.maximum_price_per_night) {
     queryParams.push(options.minimum_price_per_night * 100);
-    queryString += `${whereAdded ? 'AND' : 'WHERE'} cost_per_night >= $${queryParams.length} `;
-    whereAdded = true;
-  }
-
-  if (options.maximum_price_per_night) {
     queryParams.push(options.maximum_price_per_night * 100);
-    queryString += `${whereAdded ? 'AND' : 'WHERE'} cost_per_night <= $${queryParams.length} `;
+    queryString += `${whereAdded ? 'AND' : 'WHERE'} (cost_per_night >= $${queryParams.length - 1} AND cost_per_night <= $${queryParams.length}) `;
     whereAdded = true;
+  } else {
+    // If only minimum_price_per_night is present
+    if (options.minimum_price_per_night) {
+      queryParams.push(options.minimum_price_per_night * 100);
+      queryString += `${whereAdded ? 'AND' : 'WHERE'} cost_per_night >= $${queryParams.length} `;
+      whereAdded = true;
+    }
+
+    // If only maximum_price_per_night is present
+    if (options.maximum_price_per_night) {
+      queryParams.push(options.maximum_price_per_night * 100);
+      queryString += `${whereAdded ? 'AND' : 'WHERE'} cost_per_night <= $${queryParams.length} `;
+      whereAdded = true;
+    }
   }
 
   queryString += `
@@ -151,9 +159,14 @@ const getAllProperties = (options, limit = 10) => {
     ORDER BY cost_per_night
     LIMIT $${queryParams.length};
   `;
-  console.log(queryString, queryParams);
-  return pool.query(queryString, queryParams).then(res => res.rows);
-  
+
+  console.log("Query:", queryString);
+  console.log("Params:", queryParams);
+
+  return pool.query(queryString, queryParams).then(res => res.rows).catch(err => {
+    console.error("getAllProperties error:", err.message);
+  });
+
 };
 /**
  * Add a property to the database
