@@ -16,6 +16,7 @@ const pool = new Pool({
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function (email) {
+  console.log("getUserWithEmail called with:", email);
   return pool
   .query(`SELECT * FROM users WHERE email = $1`, [email.toLowerCase()])
   .then(result => {
@@ -51,6 +52,7 @@ const getUserWithId = function (id) {
  */
 const addUser = function (user) {
   const { name, email, password } = user;
+  console.log("addUser called with:", user);
   return pool
     .query(
       `INSERT INTO users (name, email, password)
