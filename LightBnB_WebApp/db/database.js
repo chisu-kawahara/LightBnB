@@ -123,21 +123,21 @@ const getAllProperties = (options, limit = 10) => {
     whereAdded = true;
   }
 
-  // if both min and max are present
+  // if both min and max are provided
   if (options.minimum_price_per_night && options.maximum_price_per_night) {
     queryParams.push(options.minimum_price_per_night * 100);
     queryParams.push(options.maximum_price_per_night * 100);
     queryString += `${whereAdded ? 'AND' : 'WHERE'} (cost_per_night >= $${queryParams.length - 1} AND cost_per_night <= $${queryParams.length}) `;
     whereAdded = true;
   } else {
-    // If only minimum_price_per_night is present
+    // If only minimum_price_per_night is provided
     if (options.minimum_price_per_night) {
       queryParams.push(options.minimum_price_per_night * 100);
       queryString += `${whereAdded ? 'AND' : 'WHERE'} cost_per_night >= $${queryParams.length} `;
       whereAdded = true;
     }
 
-    // If only maximum_price_per_night is present
+    // If only maximum_price_per_night is provided
     if (options.maximum_price_per_night) {
       queryParams.push(options.maximum_price_per_night * 100);
       queryString += `${whereAdded ? 'AND' : 'WHERE'} cost_per_night <= $${queryParams.length} `;
