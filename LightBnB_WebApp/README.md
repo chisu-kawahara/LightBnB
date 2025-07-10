@@ -1,4 +1,5 @@
 # LightBnB
+LightBnB is a full-stack, single-page web application that allows users to list and book properties — similar to Airbnb. The app was built with a focus on using SQL to power a dynamic front-end with real-time data from a PostgreSQL database.
 
 ## Project Structure
 
