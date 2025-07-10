@@ -67,7 +67,6 @@ const addUser = function (user) {
 };
 
 /// Reservations
-
 /**
  * Get all reservations for a single user.
  * @param {string} guest_id The id of the user.
@@ -78,7 +77,6 @@ const getAllReservations = function (guest_id, limit = 10) {
 };
 
 /// Properties
-
 /**
  * Get all properties.
  * @param {{}} options An object containing query options.
@@ -96,7 +94,6 @@ const getAllProperties = (options, limit = 10) => {
       console.log(err.message);
     });
 };
-
 /**
  * Add a property to the database
  * @param {{}} property An object containing all of the property details.
